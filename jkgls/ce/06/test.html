@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+    <meta http-equiv="Content-type" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width" />
+	<link rel="stylesheet" href="../../../common/css/jquery.mobile-1.2.1.min.css"/>	
+	<script src="../../../common/js/jquery-1.8.3.min.js"></script>
+    <script src="../../../common/js/jquery.mobile-1.2.1.min.js"></script>
+    <script src="../../../common/js/common.js"></script>
+    <script src="../../utils.js"></script>
+    <script src="tb.js"></script>
+    <script>        
+        var myQA;
+        var gIdx;
+        
+        function refreshView(){
+            $("#sctQuestion").val(myQA[gIdx].Q);
+            var h5_choice = '';
+            for(var i=0;i<myQA[gIdx].C.length;i++){
+                if(myQA[gIdx].K.length > 1){
+                    h5_choice += h5_fmt_choice4check.format(num2word[i],myQA[gIdx].C[i],i);
+                }else{
+                    h5_choice += h5_fmt_choice4radio.format(num2word[i],myQA[gIdx].C[i],i);
+                }
+            }
+            $("#btnShow").html(h5_choice);
+        }
+        
+        $(document).on("pageshow","#myQAPage",function(){
+            myQA = obj.TB;
+            gIdx = 0;
+            refreshView();
+        });
+        
+        $(document).ready(function(){
+            $("#btnPrev").click(function(){
+                if (gIdx > 0){
+                    gIdx--;
+                    refreshView();
+                }
+            });
+            $("#btnNext").click(function(){
+                if(gIdx < myQA.length){
+                    gIdx++;
+                    refreshView(); 
+                }
+            });
+            $("#btnCheck").click(function(){
+                var myA = '';
+                for(var i=0;i<myQA[gIdx].C.length;i++){
+                    var obj_name = '#c' + i;
+                    if($(obj_name).is(':checked')) {
+                        myA += num2word[i];
+                    }
+                }
+                //
+                if(myA==myQA[gIdx].K){
+                    gIdx++;
+                    refreshView();
+                }else{
+                    alert(err_msg);
+                }
+            });
+        });
+    </script>    
+</head>
+<body>
+    <div data-role="page" id="myQAPage">
+    	<div data-role="header" data-position="fixed">
+            <button id="btnPrev">前一题</button>
+            <h1>选择题</h1>
+            <button id="btnNext">后一题</button>
+    	</div>
+    	<div data-role="content" id="myQAContent">
+    		<label id="title">题目内容：</label>
+    		<textarea id="sctQuestion" style="height: 120px;"></textarea>
+            <div id="btnShow"></div>
+            <button id="btnCheck">确认答案</button>
+    	</div>
+    </div>    
+</body>
+</html>
